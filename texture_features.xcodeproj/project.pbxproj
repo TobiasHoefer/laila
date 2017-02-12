@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		86C0B43B1E48B10800FBDA87 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86C0B43A1E48B10800FBDA87 /* main.cpp */; };
+		86C0B4441E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86C0B4421E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib */; };
+		86C0B4451E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86C0B4431E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,9 @@
 /* Begin PBXFileReference section */
 		86C0B4371E48B10800FBDA87 /* texture_features */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = texture_features; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C0B43A1E48B10800FBDA87 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		86C0B4421E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.13.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_highgui.2.4.13.dylib; sourceTree = "<group>"; };
+		86C0B4431E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.13.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_core.2.4.13.dylib; sourceTree = "<group>"; };
+		86C0B4461E48D63C00FBDA87 /* texture_features.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_features.cpp; path = ../../../../texture_features.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +37,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86C0B4441E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib in Frameworks */,
+				86C0B4451E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +48,7 @@
 		86C0B42E1E48B10700FBDA87 = {
 			isa = PBXGroup;
 			children = (
+				86C0B4411E48B56700FBDA87 /* OpenCV Frameworks */,
 				86C0B4391E48B10800FBDA87 /* texture_features */,
 				86C0B4381E48B10800FBDA87 /* Products */,
 			);
@@ -57,9 +65,19 @@
 		86C0B4391E48B10800FBDA87 /* texture_features */ = {
 			isa = PBXGroup;
 			children = (
+				86C0B4461E48D63C00FBDA87 /* texture_features.cpp */,
 				86C0B43A1E48B10800FBDA87 /* main.cpp */,
 			);
 			path = texture_features;
+			sourceTree = "<group>";
+		};
+		86C0B4411E48B56700FBDA87 /* OpenCV Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				86C0B4421E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib */,
+				86C0B4431E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib */,
+			);
+			name = "OpenCV Frameworks";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -216,6 +234,11 @@
 		86C0B43F1E48B10800FBDA87 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/opencv/2.4.13.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -223,6 +246,11 @@
 		86C0B4401E48B10800FBDA87 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/opencv/2.4.13.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
