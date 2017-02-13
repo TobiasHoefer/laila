@@ -33,6 +33,7 @@ int display_img(Mat input_img, string name){
     return 0;
 }
 
+
 int variance(Mat input_img, int m, float norm, bool cuda_support){
     
     short unsigned int channel_count = input_img.channels();
@@ -42,8 +43,7 @@ int variance(Mat input_img, int m, float norm, bool cuda_support){
     split(input_img, chan);
     unsigned int rows = input_img.rows;
     unsigned int cols = input_img.cols;
-    int *result = new int[rows*cols];
-    
+    vector<uchar> result(rows*cols);
     norm = 255.0 / norm;
     
     
@@ -57,20 +57,20 @@ int variance(Mat input_img, int m, float norm, bool cuda_support){
         //int *environment = new int[M];
         int environment[9];
         unsigned int e;
-        int M_corner;
+        double M_corner;
         
         //Iterating through bitmap of a single channel
         for(int i=0; i < rows; i++){
             for(int j=0; j < cols; j++){
                 
                 //kernel convolution for given size m
-                int mean = 0;
+                double mean = 0;
                 e = 0;
                 M_corner = M;
                 for(int x=i-(m-1)/2;x<=i+(m-1)/2;x++){
                     for(int y=j-(m-1)/2;y<=j+(m-1)/2;y++){
                         if (x >= 0 && y >= 0) {
-                            mean += chan[c].at<uchar>(x,y);
+                            mean += (double)chan[c].at<uchar>(x,y);
                             environment[e] = chan[c].at<uchar>(x,y);
                         }else{
                             environment[e] = -1;
@@ -81,29 +81,22 @@ int variance(Mat input_img, int m, float norm, bool cuda_support){
                 }
                 mean = mean/M_corner;
                 //variance
-                int variance=0;
+                double variance=0;
                 for(int l=0;l<M;l++){
                     if(environment[l] >= 0){
                         variance += pow(environment[l] - mean,2);
                     }
                 }
-                int v = 1.0/((double)M_corner-1.0) * variance;
-                v = v > 255 ? 255 : v;
+                double v = 1.0/((double)M_corner-1.0) * variance;
+                v = v > 255.0 ? 255.0 : v;
                 result[r] = v;
-                //cout<<result[r]<<endl;
                 r++;
             }
         }
-        output[c] = Mat(rows,cols, CV_8U, result);
+        output[c] = Mat (rows,cols, CV_8UC1);
+        memcpy(output[c].data, result.data(), result.size()*sizeof(uchar));
+        //output[c] = Mat(rows,cols, CV_8U, result);
     }
-    
-    delete [] result;
-    //delete [] environment;
-    
-    //cout<< chan[0]<<endl<<endl;
-   // cout<< output[0] <<endl <<endl;
-
-//    display_img(chan[0], "Blue");
     display_img(output[0], "Blue");
     display_img(output[1], "Green");
     display_img(output[2], "Red");
@@ -114,18 +107,12 @@ int variance(Mat input_img, int m, float norm, bool cuda_support){
 
 
 int main(int argc, const char * argv[]) {
-    
-    Mat img = imread("/Users/tobiashofer/Desktop/lena.tiff", CV_LOAD_IMAGE_UNCHANGED);
+    Mat img = imread("/Users/tobiashofer/Desktop/test.tif", CV_LOAD_IMAGE_UNCHANGED);
     if(img.empty()){
             cout << "Error: Image cannot be loaded" << endl;
             system("pause");
             return -1;
         }
-    
-    //display_img(img);
-    variance(img, 7, 1, true);
-    
-    
-        
-        return 0;
+    variance(img, 3, 1, true);
+    return 0;
 }
