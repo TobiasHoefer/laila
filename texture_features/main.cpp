@@ -16,13 +16,13 @@ using namespace std;
 
 
 
-int display_img(Mat input_img, string name){
+int display_img(Mat& src, string name){
     
     //create a window
     namedWindow(name, CV_WINDOW_AUTOSIZE);
     
     //display the image
-    imshow(name, input_img);
+    imshow(name, src);
     
     //wait infinite time for a keypress
     waitKey(0);
@@ -34,22 +34,108 @@ int display_img(Mat input_img, string name){
 }
 
 
-int variance(Mat input_img, int m, float norm, bool cuda_support){
-    
-    short unsigned int channel_count = input_img.channels();
+int variance(Mat& src, int m, bool cuda_support){
+    short unsigned int channel_count = src.channels();
     Mat chan[3];
+    split(src, chan);
     Mat output[3];
     Mat mergedResult;
-    split(input_img, chan);
-    unsigned int rows = input_img.rows;
-    unsigned int cols = input_img.cols;
+    
+    unsigned int rows = src.rows;
+    unsigned int cols = src.cols;
     vector<uchar> result(rows*cols);
-    norm = 255.0 / norm;
-    
-    
     //Number of pixel in a kernel m*m
     int M = (float) (m * m);
 
+    //iterate over all channels(B,G,R) or channels(H,S,V)
+    for (int c=0; c < channel_count; c++){
+        unsigned int r = 0;
+        int environment[9];
+        unsigned int e;
+        double M_corner;
+        
+        //Iterating through bitmap of a single channel
+        for(int i=0; i < rows; i++){
+            for(int j=0; j < cols; j++){
+                
+                //kernel convolution for given size m
+                double mean = 0;
+                e = 0;
+                M_corner = M;
+                for(int x=i-(m-1)/2;x<=i+(m-1)/2;x++){
+                    for(int y=j-(m-1)/2;y<=j+(m-1)/2;y++){
+                        if (x >= 0 && y >= 0) {
+                            mean += (double)chan[c].at<uchar>(x,y);
+                            environment[e] = chan[c].at<uchar>(x,y);
+                        }else{
+                            environment[e] = -1;
+                            M_corner -= 1;
+                        }
+                        e++;
+                    }
+                }
+                mean = mean/M_corner;
+                //variance
+                double variance=0;
+                for(int l=0;l<M;l++){
+                    if(environment[l] >= 0){
+                        variance += pow(environment[l] - mean,2);
+                    }
+                }
+                double v = 1.0/((double)M_corner-1.0) * variance;
+                v = v > 255.0 ? 255.0 : v;
+                result[r] = v;
+                r++;
+            }
+        }
+        output[c] = Mat (rows,cols, CV_8UC1);
+        memcpy(output[c].data, result.data(), result.size()*sizeof(uchar));
+    }
+    display_img(output[0], "Blue");
+    display_img(output[1], "Green");
+    display_img(output[2], "Red");
+    Mat rgb_result;
+    vector<Mat> channels;
+    channels.push_back(output[0]);
+    channels.push_back(output[1]);
+    channels.push_back(output[2]);
+    merge(channels, rgb_result);
+    display_img(rgb_result, "RGB_Result");
+    return 0;
+}
+
+
+int edge_density(Mat& src, int m, float norm, bool cuda_support, char basis){
+    short unsigned int channel_count = src.channels();
+    Mat chan[3];
+    //Apply Gaussian Blurr to reduce the noice
+    GaussianBlur(src, src, Size(3,3), 0, 0, BORDER_DEFAULT);
+    //Sobel edge detection as basis
+    if (basis == 'S'){
+        int scale = 1;
+        int delta = 0;
+        int ddepth = CV_16S;
+    }
+    //Laplacian edge detection as basis
+    if (basis == 'L'){
+        int scale = 1;
+        int delta = 0;
+        int ddepth = CV_16S;
+        
+        /// Convert the image to grayscale
+        cvtColor( src, src_gray, CV_BGR2GRAY );
+
+    }
+    split(src, chan);
+    Mat output[3];
+    Mat mergedResult;
+    
+    unsigned int rows = src.rows;
+    unsigned int cols = src.cols;
+    vector<uchar> result(rows*cols);
+    norm = 255.0 / norm;
+    //Number of pixel in a kernel m*m
+    int M = (float) (m * m);
     
     //iterate over all channels(B,G,R) or channels(H,S,V)
     for (int c=0; c < channel_count; c++){
@@ -95,14 +181,19 @@ int variance(Mat input_img, int m, float norm, bool cuda_support){
         }
         output[c] = Mat (rows,cols, CV_8UC1);
         memcpy(output[c].data, result.data(), result.size()*sizeof(uchar));
-        //output[c] = Mat(rows,cols, CV_8U, result);
     }
     display_img(output[0], "Blue");
     display_img(output[1], "Green");
     display_img(output[2], "Red");
+    Mat rgb_result;
+    vector<Mat> channels;
+    channels.push_back(output[0]);
+    channels.push_back(output[1]);
+    channels.push_back(output[2]);
+    merge(channels, rgb_result);
+    display_img(rgb_result, "RGB_Result");
     return 0;
 }
-
 
 
 
@@ -113,6 +204,6 @@ int main(int argc, const char * argv[]) {
             system("pause");
             return -1;
         }
-    variance(img, 3, 1, true);
+    variance(img, 3, true);
     return 0;
 }
