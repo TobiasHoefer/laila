@@ -17,19 +17,13 @@ using namespace std;
 
 
 int display_img(Mat& src, string name){
-    
     //create a window
     namedWindow(name, CV_WINDOW_AUTOSIZE);
-    
     //display the image
     imshow(name, src);
-    
     //wait infinite time for a keypress
     waitKey(0);
-    
-    //destroy the window
     destroyWindow(name);
-    
     return 0;
 }
 
@@ -39,18 +33,20 @@ int variance(Mat& src, int m, bool cuda_support){
     Mat chan[3];
     split(src, chan);
     Mat output[3];
-    Mat mergedResult;
+    Mat merged_result;
     
     unsigned int rows = src.rows;
     unsigned int cols = src.cols;
-    vector<uchar> result(rows*cols);
+    
     //Number of pixel in a kernel m*m
     int M = (float) (m * m);
 
-    //iterate over all channels(B,G,R) or channels(H,S,V)
+    //iterate over all channels(B,G,R)
     for (int c=0; c < channel_count; c++){
+        vector<uchar> result(rows*cols);
         unsigned int r = 0;
-        int environment[9];
+        //TODO:Delete vector ?
+        vector<uchar> environment(M);
         unsigned int e;
         double M_corner;
         
@@ -90,22 +86,21 @@ int variance(Mat& src, int m, bool cuda_support){
         }
         output[c] = Mat (rows,cols, CV_8UC1);
         memcpy(output[c].data, result.data(), result.size()*sizeof(uchar));
+        result.clear();
     }
     display_img(output[0], "Blue");
     display_img(output[1], "Green");
     display_img(output[2], "Red");
-    Mat rgb_result;
     vector<Mat> channels;
     channels.push_back(output[0]);
     channels.push_back(output[1]);
     channels.push_back(output[2]);
-    merge(channels, rgb_result);
-    display_img(rgb_result, "RGB_Result");
+    merge(channels, merged_result);
+    display_img(merged_result, "RGB_Result");
     return 0;
 }
 
-
-int edge_density(Mat& src, int m, float norm, bool cuda_support, char basis){
+int edge_density(Mat& src, int m, char& basis, bool cuda_support){
     short unsigned int channel_count = src.channels();
     Mat chan[3];
     //Apply Gaussian Blurr to reduce the noice
@@ -121,27 +116,29 @@ int edge_density(Mat& src, int m, float norm, bool cuda_support, char basis){
         int scale = 1;
         int delta = 0;
         int ddepth = CV_16S;
-        
+
         /// Convert the image to grayscale
         cvtColor( src, src_gray, CV_BGR2GRAY );
 
     }
     split(src, chan);
+
+    split(src, chan);
     Mat output[3];
-    Mat mergedResult;
+    Mat merged_result;
     
     unsigned int rows = src.rows;
     unsigned int cols = src.cols;
-    vector<uchar> result(rows*cols);
-    norm = 255.0 / norm;
+    
     //Number of pixel in a kernel m*m
     int M = (float) (m * m);
     
-    //iterate over all channels(B,G,R) or channels(H,S,V)
+    //iterate over all channels(B,G,R)
     for (int c=0; c < channel_count; c++){
+        vector<uchar> result(rows*cols);
         unsigned int r = 0;
-        //int *environment = new int[M];
-        int environment[9];
+        //TODO:Delete vector ?
+        vector<uchar> environment(M);
         unsigned int e;
         double M_corner;
         
@@ -181,17 +178,17 @@ int edge_density(Mat& src, int m, float norm, bool cuda_support, char basis){
         }
         output[c] = Mat (rows,cols, CV_8UC1);
         memcpy(output[c].data, result.data(), result.size()*sizeof(uchar));
+        result.clear();
     }
     display_img(output[0], "Blue");
     display_img(output[1], "Green");
     display_img(output[2], "Red");
-    Mat rgb_result;
     vector<Mat> channels;
     channels.push_back(output[0]);
     channels.push_back(output[1]);
     channels.push_back(output[2]);
-    merge(channels, rgb_result);
-    display_img(rgb_result, "RGB_Result");
+    merge(channels, merged_result);
+    display_img(merged_result, "RGB_Result");
     return 0;
 }
 
@@ -204,6 +201,6 @@ int main(int argc, const char * argv[]) {
             system("pause");
             return -1;
         }
-    variance(img, 3, true);
+    variance(img, 5, true);
     return 0;
 }
