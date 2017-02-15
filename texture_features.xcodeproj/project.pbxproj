@@ -41,6 +41,7 @@
 			files = (
 				86BEA2531E54A83900F3DF18 /* libopencv_imgproc.dylib in Frameworks */,
 				86C0B4441E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib in Frameworks */,
+				86BA23BE1E54A8B1006B2F19 /* libopencv_imgproc.2.4.13.dylib in Frameworks */,
 				86C0B4451E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
