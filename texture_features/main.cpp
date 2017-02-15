@@ -18,9 +18,14 @@ using namespace std;
 
 int display_img(Mat& src, string name){
     //create a window
-    namedWindow(name, CV_WINDOW_AUTOSIZE);
+    namedWindow(name, CV_WINDOW_NORMAL);
+    
+    //resize image
+    resize(src, src, Size(1000,1000));
+    
     //display the image
     imshow(name, src);
+    
     //wait infinite time for a keypress
     waitKey(0);
     destroyWindow(name);
@@ -108,8 +113,9 @@ int edge_density(Mat& src, int m, char basis, bool cuda_support){
 
     
     //Apply Gaussian Blurr to reduce the noice
-    GaussianBlur(src, src, Size(3,3), 0, 0, BORDER_DEFAULT);
-    display_img(src, "gaussian_blurr");
+    GaussianBlur(src, src, Size(5,5), 0, 0, BORDER_DEFAULT);
+    //display_img(src, "gaussian_blurr");
+    
     //Sobel edge detection as basis
     if (basis == 'S'){
         int scale = 1;
@@ -121,10 +127,16 @@ int edge_density(Mat& src, int m, char basis, bool cuda_support){
         int scale = 1;
         int delta = 0;
         int ddepth = CV_16S;
+        int kernel_size = 3;
+        Mat src_gray, dst, abs_dst;
 
         /// Convert the image to grayscale
-        //cvtColor( src, src_gray, CV_BGR2GRAY );
-
+        cvtColor(src, src_gray, CV_BGR2GRAY);
+        //display_img(src_gray, "grayscale");
+        
+        Laplacian(src_gray, dst, ddepth, kernel_size, scale, delta, BORDER_DEFAULT);
+        convertScaleAbs(dst, abs_dst);
+        display_img(abs_dst, "Laplacian");
     }
 //    split(src, chan);
 //
