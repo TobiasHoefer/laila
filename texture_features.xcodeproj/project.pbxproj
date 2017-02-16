@@ -31,7 +31,6 @@
 		86C0B43A1E48B10800FBDA87 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		86C0B4421E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.13.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_highgui.2.4.13.dylib; sourceTree = "<group>"; };
 		86C0B4431E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.13.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_core.2.4.13.dylib; sourceTree = "<group>"; };
-		86C0B4461E48D63C00FBDA87 /* texture_features.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_features.cpp; path = ../../../../texture_features.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +40,6 @@
 			files = (
 				86BEA2531E54A83900F3DF18 /* libopencv_imgproc.dylib in Frameworks */,
 				86C0B4441E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib in Frameworks */,
-				86BA23BE1E54A8B1006B2F19 /* libopencv_imgproc.2.4.13.dylib in Frameworks */,
 				86C0B4451E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -69,7 +67,6 @@
 		86C0B4391E48B10800FBDA87 /* texture_features */ = {
 			isa = PBXGroup;
 			children = (
-				86C0B4461E48D63C00FBDA87 /* texture_features.cpp */,
 				86C0B43A1E48B10800FBDA87 /* main.cpp */,
 			);
 			path = texture_features;
