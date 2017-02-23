@@ -280,6 +280,17 @@ Mat autocorrelation(Mat& src, int m, int dx, int dy, bool cuda_support){
 }
 
 
+Mat laplace_pyramid(Mat& src){
+    Mat result;
+    
+    
+    
+    
+    
+    return result;
+}
+
+
 
 int main(int argc, const char * argv[]) {
     Mat result_var, result_edge_dens, result_auto, result;
@@ -295,20 +306,9 @@ int main(int argc, const char * argv[]) {
     result_edge_dens = edge_density(img, 5, 'S', false);
     result_auto = autocorrelation(img, 7, 0, 5, false);
     
-//    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
-//    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
-//    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
-    
-//    channels.push_back(img);
-//    channels.push_back(result_var);
-//    channels.push_back(result_edge_dens);
-//    channels.push_back(result_auto);
-//    merge(channels, result);
-//    cout<< result.channels()<<endl;
-//    imwrite("/Users/tobiashofer/Desktop/merged_result.tif", result);
-    
-    
-    
+    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
+    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
+    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
     return 0;
 }
 
