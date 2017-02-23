@@ -16,12 +16,18 @@ using namespace std;
 
 
 
-int display_img(Mat src, string name){
-    //create a window
-    namedWindow(name, CV_WINDOW_NORMAL);
+int display_img(Mat src, string name, bool resize_img=true){
+    if (resize_img){
+        //create a window
+        namedWindow(name, CV_WINDOW_NORMAL);
+        //resize image
+        resize(src, src, Size(900,900));
+    }else{
+        //create a window
+        namedWindow(name, CV_WINDOW_AUTOSIZE);
+        
+    }
     
-    //resize image
-    resize(src, src, Size(900,900));
     
     //display the image
     imshow(name, src);
@@ -279,36 +285,130 @@ Mat autocorrelation(Mat& src, int m, int dx, int dy, bool cuda_support){
     return output;
 }
 
-
-Mat laplace_pyramid(Mat& src){
+/**
+    Converts BGR Imgae to HSV Image.
+    Be aware that the OpenCV HSV values are:
+        H from 0 - 180
+        S and V from 0 - 255
+    OpenCV is unable to show HSV Images normally, this distorts the color
+    because they are being interpreted as BGR.
+*/
+Mat convert_bgr_to_hsv(Mat img){
     Mat result;
-    
-    
-    
-    
-    
+    cvtColor(img, result, CV_BGR2HSV);
     return result;
 }
 
 
 
+Mat get_gaussian_pyramid(Mat src, int lvl, bool auto_expand=true){
+    // Convert the image to grayscale
+    cvtColor(src, src, CV_BGR2GRAY);
+    //Make sure its divisible by 2^n
+    Mat result = src;
+    for (int i =0; i < lvl; i++){
+        pyrDown(result, result);
+    }
+    if (auto_expand){
+        for (int i =0; i < lvl; i++){
+            pyrUp(result, result);
+        }
+    }
+    return result;
+}
+
+Mat get_laplacian_pyramid(Mat src, int lvl, bool auto_expand=true){
+    Mat result;
+    Mat g,G;
+    G = get_gaussian_pyramid(src, lvl, false);
+    pyrDown(G, g);
+    pyrUp(g, g);
+    result = G - g;
+    if (auto_expand){
+        for (int i =0; i < lvl; i++){
+            pyrUp(result, result);
+        }
+    }
+    return result;
+}
+
+
 int main(int argc, const char * argv[]) {
-    Mat result_var, result_edge_dens, result_auto, result;
-    vector<Mat> channels;
     Mat img = imread("/Users/tobiashofer/Desktop/test.tif", CV_LOAD_IMAGE_UNCHANGED);
     if(img.empty()){
             cout << "Error: Image cannot be loaded" << endl;
             system("pause");
             return -1;
         }
+    
+    
+    //TODO create Roi, so that the Image size is part of 2^n (recommende for Laplacian ) ???
+    resize(img, img, Size(2048, 2048));
+    //display_img(img, "reimg");
+  
+    Mat l0, l2, l3;
+    l0 = get_laplacian_pyramid(img, 0);
+    l2 = get_laplacian_pyramid(img, 1);
+    l3 = get_laplacian_pyramid(img, 3);
+    
+    display_img(l0, "l0");
+    display_img(l2, "l2");
+    display_img(l3, "l3");
+    
+    
+    //Testing Tesxture Features on original Image
+    Mat result_var, result_edge_dens, result_auto, result;
     result_var = variance(img, 5, false);
     Mat test = edge_density(img, 5, 'L', false);
     result_edge_dens = edge_density(img, 5, 'S', false);
     result_auto = autocorrelation(img, 7, 0, 5, false);
     
-    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
-    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
-    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
+    display_img(result_var, "var_org");
+    display_img(result_edge_dens, "edge_dens_org");
+    display_img(result_auto, "auto_org");
+    
+    
+    //Testing Tesxture Features on L33
+    Mat result_var_l, result_edge_dens_l, result_auto_l;
+    result_var_l = variance(img, 5, false);
+    result_edge_dens_l = edge_density(img, 5, 'S', false);
+    result_auto_l = autocorrelation(img, 7, 0, 5, false);
+    
+    display_img(result_var_l, "var_l");
+    display_img(result_edge_dens_l, "edge_dens_l");
+    display_img(result_auto_l, "auto_l");
+
+    
+    
+    
+//    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
+//    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
+//    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
+ 
+    
+    
+//    Mat g1, g2, g3;
+//    g1 = get_gaussian_pyramid(img, 1);
+//    g2 = get_gaussian_pyramid(img, 4);
+//    g3 = get_gaussian_pyramid(img, 5);
+//    
+//    display_img(img, "g0", false);
+//    display_img(g1, "g1", false);
+//    display_img(g2, "g2", false);
+//    display_img(g3, "g3", false);
+
+    
+    
+
+    
+    
+//    Mat hsv;
+//    
+//    hsv = convert_bgr_to_hsv(img);
+//    display_img(hsv, "hsv");
+//    cvtColor(hsv, hsv, CV_HSV2BGR);
+//    display_img(hsv, "hsv");
+
     return 0;
 }
 
