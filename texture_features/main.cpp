@@ -39,7 +39,7 @@ int display_img(Mat src, string name, bool resize_img=true){
 }
 
 
-Mat variance(Mat& src, int m, bool cuda_support){
+Mat variance(Mat& src, int m, bool grayscale){
     short unsigned int channel_count = src.channels();
     Mat chan[3];
     split(src, chan);
@@ -99,15 +99,19 @@ Mat variance(Mat& src, int m, bool cuda_support){
         memcpy(output[c].data, result.data(), result.size()*sizeof(uchar));
         result.clear();
     }
-    display_img(output[0], "Blue");
-    display_img(output[1], "Green");
-    display_img(output[2], "Red");
-    vector<Mat> channels;
-    channels.push_back(output[0]);
-    channels.push_back(output[1]);
-    channels.push_back(output[2]);
-    merge(channels, merged_result);
-    display_img(merged_result, "RGB_Result");
+//    display_img(output[0], "Blue");
+//    display_img(output[1], "Green");
+//    display_img(output[2], "Red");
+    if (channel_count==3){
+        vector<Mat> channels;
+        channels.push_back(output[0]);
+        channels.push_back(output[1]);
+        channels.push_back(output[2]);
+        merge(channels, merged_result);
+    }else{
+        merged_result = output[0];
+    }
+    //display_img(merged_result, "RGB_Result");
     return merged_result;
 }
 
@@ -122,7 +126,11 @@ Mat edge_density(Mat& src, int m, char basis, bool cuda_support){
     //display_img(src, "gaussian_blurr");
     
     // Convert the image to grayscale
-    cvtColor(src, src_gray, CV_BGR2GRAY);
+    if (src.channels()!=1){
+        cvtColor(src, src_gray, CV_BGR2GRAY);
+    }else{
+        src_gray = src;
+    }
     //display_img(src_gray, "grayscale");
     
     //Sobel edge detection as basis
@@ -141,7 +149,7 @@ Mat edge_density(Mat& src, int m, char basis, bool cuda_support){
         convertScaleAbs(grad_y, abs_grad_y);
         //approximate the gradient
         addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad);
-        display_img(grad, "Sobel");
+        //display_img(grad, "Sobel");
         
     }
     //Laplacian edge detection as basis
@@ -153,7 +161,7 @@ Mat edge_density(Mat& src, int m, char basis, bool cuda_support){
         Laplacian(src_gray, dst, ddepth, kernel_size, scale, delta, BORDER_DEFAULT);
         //abs_dst = absolute_value(dst)
         convertScaleAbs(dst, grad);
-        display_img(grad, "Laplacian");
+        //display_img(grad, "Laplacian");
     }
   
     //Number of pixel in a kernel m*m
@@ -192,15 +200,18 @@ Mat edge_density(Mat& src, int m, char basis, bool cuda_support){
     }
     output = Mat (rows,cols, CV_8UC1);
     memcpy(output.data, result.data(), result.size()*sizeof(uchar));
-    display_img(output, "edge_density");
+    //display_img(output, "edge_density");
     return output;
 }
 
 Mat autocorrelation(Mat& src, int m, int dx, int dy, bool cuda_support){
     Mat src_gray, output;
     /// Convert the image to grayscale
-    cvtColor(src, src_gray, CV_BGR2GRAY);
-
+    if (src.channels()!=1){
+        cvtColor(src, src_gray, CV_BGR2GRAY);
+    }else{
+        src_gray = src;
+    }
     unsigned int rows = src.rows;
     unsigned int cols = src.cols;
     
@@ -281,9 +292,11 @@ Mat autocorrelation(Mat& src, int m, int dx, int dy, bool cuda_support){
     }
     output = Mat (rows,cols, CV_8UC1);
     memcpy(output.data, result.data(), result.size()*sizeof(uchar));
-    display_img(output, "auto_corr");
+    //display_img(output, "auto_corr");
     return output;
 }
+
+
 
 /**
     Converts BGR Imgae to HSV Image.
@@ -303,8 +316,10 @@ Mat convert_bgr_to_hsv(Mat img){
 
 Mat get_gaussian_pyramid(Mat src, int lvl, bool auto_expand=true){
     // Convert the image to grayscale
-    cvtColor(src, src, CV_BGR2GRAY);
-    //Make sure its divisible by 2^n
+    if (src.channels()!=1){
+        cvtColor(src, src, CV_BGR2GRAY);
+    }
+    //Make sure its rows and cols are even
     Mat result = src;
     for (int i =0; i < lvl; i++){
         pyrDown(result, result);
@@ -333,6 +348,8 @@ Mat get_laplacian_pyramid(Mat src, int lvl, bool auto_expand=true){
 }
 
 
+
+
 int main(int argc, const char * argv[]) {
     Mat img = imread("/Users/tobiashofer/Desktop/test.tif", CV_LOAD_IMAGE_UNCHANGED);
     if(img.empty()){
@@ -342,10 +359,33 @@ int main(int argc, const char * argv[]) {
         }
     
     
-    //TODO create Roi, so that the Image size is part of 2^n (recommende for Laplacian ) ???
+
+    int check = img.channels();
+    
+  
+    //Testing Tesxture Features on original Image
+//    Mat result_var, result_edge_dens, result_auto, result;
+//    result_var = variance(img, 5, false);
+//    Mat test = edge_density(img, 5, 'L', false);
+//    result_edge_dens = edge_density(img, 5, 'S', false);
+//    result_auto = autocorrelation(img, 7, 0, 5, false);
+//    
+//    display_img(result_var, "var_org");
+//    display_img(result_edge_dens, "edge_dens_org");
+//    display_img(result_auto, "auto_org");
+//    
+//    
+//    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
+//    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
+//    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
+// 
+    
+    
+    //Testing Tesxture Features on L33
+    //TODO create Roi, so that the Image size is even (recommende for Laplacian ) ???
     resize(img, img, Size(2048, 2048));
     //display_img(img, "reimg");
-  
+    
     Mat l0, l2, l3;
     l0 = get_laplacian_pyramid(img, 0);
     l2 = get_laplacian_pyramid(img, 1);
@@ -354,21 +394,9 @@ int main(int argc, const char * argv[]) {
     display_img(l0, "l0");
     display_img(l2, "l2");
     display_img(l3, "l3");
+
+    img = l0;
     
-    
-    //Testing Tesxture Features on original Image
-    Mat result_var, result_edge_dens, result_auto, result;
-    result_var = variance(img, 5, false);
-    Mat test = edge_density(img, 5, 'L', false);
-    result_edge_dens = edge_density(img, 5, 'S', false);
-    result_auto = autocorrelation(img, 7, 0, 5, false);
-    
-    display_img(result_var, "var_org");
-    display_img(result_edge_dens, "edge_dens_org");
-    display_img(result_auto, "auto_org");
-    
-    
-    //Testing Tesxture Features on L33
     Mat result_var_l, result_edge_dens_l, result_auto_l;
     result_var_l = variance(img, 5, false);
     result_edge_dens_l = edge_density(img, 5, 'S', false);
@@ -379,11 +407,10 @@ int main(int argc, const char * argv[]) {
     display_img(result_auto_l, "auto_l");
 
     
-    
-    
-//    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
-//    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
-//    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
+    imwrite("/Users/tobiashofer/Desktop/result_var_l.tif", result_var_l);
+    imwrite("/Users/tobiashofer/Desktop/result_edge_dens_l.tif", result_edge_dens_l);
+    imwrite("/Users/tobiashofer/Desktop/result_auto_l.tif", result_auto_l);
+
  
     
     
@@ -397,10 +424,6 @@ int main(int argc, const char * argv[]) {
 //    display_img(g2, "g2", false);
 //    display_img(g3, "g3", false);
 
-    
-    
-
-    
     
 //    Mat hsv;
 //    
