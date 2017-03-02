@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:texture_features.xcodeproj">
+      location = "self:/Users/tobiashofer/Documents/BA/tool/texture_features/feature_vector.xcodeproj">
    </FileRef>
 </Workspace>

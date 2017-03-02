@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cmath>
 
+
 using namespace cv;
 using namespace std;
 
@@ -183,7 +184,7 @@ Mat edge_density(Mat& src, int m, char basis, bool cuda_support){
                 for(int y=j-(m-1)/2;y<=j+(m-1)/2;y++){
                     if (x >= 0 && x <= rows && y >= 0 && y <= cols) {
                         int pixel = grad.at<uchar>(x,y);
-                        if(pixel >= 30){
+                        if(pixel >= 50){
                             edge_count++;
                         }
                     }else{
@@ -319,7 +320,7 @@ Mat get_gaussian_pyramid(Mat src, int lvl, bool auto_expand=true){
     if (src.channels()!=1){
         cvtColor(src, src, CV_BGR2GRAY);
     }
-    //Make sure its rows and cols are even
+    //Make sure its rows and cols are divisible by 2 (mind lvl times)
     Mat result = src;
     for (int i =0; i < lvl; i++){
         pyrDown(result, result);
@@ -348,90 +349,90 @@ Mat get_laplacian_pyramid(Mat src, int lvl, bool auto_expand=true){
 }
 
 
+class InputParser{
+public:
+    InputParser(int &argc, char **argv){
+        for(int i=1; i < argc; ++i){
+            this->tokens.push_back(std::string(argv[i]));
+        }
+    }
+    
+    const string& get_cmd_option(const string &option) const{
+        vector<string>::const_iterator itr;
+        itr = find(this->tokens.begin(), this->tokens.end(), option);
+        if(itr != this->tokens.end() && ++itr != this->tokens.end()){
+            return *itr;
+        }
+        return empty_string;
+        
+    }
+    
+    bool cmd_option_exists(const string &option) const{
+        return find(this->tokens.begin(), this->tokens.end(), option)
+        != this->tokens.end();
+    }
 
 
-int main(int argc, const char * argv[]) {
-    Mat img = imread("/Users/tobiashofer/Desktop/test.tif", CV_LOAD_IMAGE_UNCHANGED);
+private:
+    vector<string> tokens;
+    String empty_string;
+};
+
+
+
+
+int main(int argc, char **argv) {
+//    //check the number if parameters
+//    if (argc < 2){
+//        //Tell the user how to run the program
+//        cerr << "Usage: " << endl;;
+//        return -1;
+//    }
+    InputParser input(argc, argv);
+    if (input.cmd_option_exists("-h")){
+        cerr << "Brauchst Hilfe du Looser?" << endl;
+        return 0;
+    }
+    
+    const string &filename_src = input.get_cmd_option("-src");
+    if (filename_src.empty()){
+        cerr << "Cant find src image. Please specifiy path -src" << endl;
+        return -1;
+    }
+    
+    const string &filename_des = input.get_cmd_option("-des");
+    if (filename_des.empty()){
+        cerr << "Missing Destination Path -des" << endl;
+        return -1;
+    }
+    
+    int k_size = 0;
+    const string &kernel_size = input.get_cmd_option("-k_size");
+    if (kernel_size.empty()){
+        cerr << "Missing kernel size -k_size" << endl;
+        return -1;
+    }else{
+        k_size = stoi(kernel_size);
+    }
+    
+    const string &dvec = input.get_cmd_option("-dvec");
+    if (dvec.empty()){
+        cerr << "Missing delta vector for autocorrelation -dvec" << endl;
+        return -1;
+    }else{
+        int dvec = stoi(kernel_size);
+    }
+    
+    
+    Mat img = imread(filename_src, CV_LOAD_IMAGE_UNCHANGED);
     if(img.empty()){
             cout << "Error: Image cannot be loaded" << endl;
             system("pause");
             return -1;
         }
-    
-    
 
-    int check = img.channels();
-    
-  
-    //Testing Tesxture Features on original Image
-//    Mat result_var, result_edge_dens, result_auto, result;
-//    result_var = variance(img, 5, false);
-//    Mat test = edge_density(img, 5, 'L', false);
-//    result_edge_dens = edge_density(img, 5, 'S', false);
-//    result_auto = autocorrelation(img, 7, 0, 5, false);
-//    
-//    display_img(result_var, "var_org");
-//    display_img(result_edge_dens, "edge_dens_org");
-//    display_img(result_auto, "auto_org");
-//    
-//    
-//    imwrite("/Users/tobiashofer/Desktop/result_var.tif", result_var);
-//    imwrite("/Users/tobiashofer/Desktop/result_edge_dens.tif", result_edge_dens);
-//    imwrite("/Users/tobiashofer/Desktop/result_auto.tif", result_auto);
-// 
-    
-    
-    //Testing Tesxture Features on L33
-    //TODO create Roi, so that the Image size is even (recommende for Laplacian ) ???
-    resize(img, img, Size(2048, 2048));
-    //display_img(img, "reimg");
-    
-    Mat l0, l2, l3;
-    l0 = get_laplacian_pyramid(img, 0);
-    l2 = get_laplacian_pyramid(img, 1);
-    l3 = get_laplacian_pyramid(img, 3);
-    
-    display_img(l0, "l0");
-    display_img(l2, "l2");
-    display_img(l3, "l3");
-
-    img = l0;
-    
-    Mat result_var_l, result_edge_dens_l, result_auto_l;
-    result_var_l = variance(img, 5, false);
-    result_edge_dens_l = edge_density(img, 5, 'S', false);
-    result_auto_l = autocorrelation(img, 7, 0, 5, false);
-    
-    display_img(result_var_l, "var_l");
-    display_img(result_edge_dens_l, "edge_dens_l");
-    display_img(result_auto_l, "auto_l");
-
-    
-    imwrite("/Users/tobiashofer/Desktop/result_var_l.tif", result_var_l);
-    imwrite("/Users/tobiashofer/Desktop/result_edge_dens_l.tif", result_edge_dens_l);
-    imwrite("/Users/tobiashofer/Desktop/result_auto_l.tif", result_auto_l);
-
- 
-    
-    
-//    Mat g1, g2, g3;
-//    g1 = get_gaussian_pyramid(img, 1);
-//    g2 = get_gaussian_pyramid(img, 4);
-//    g3 = get_gaussian_pyramid(img, 5);
-//    
-//    display_img(img, "g0", false);
-//    display_img(g1, "g1", false);
-//    display_img(g2, "g2", false);
-//    display_img(g3, "g3", false);
-
-    
-//    Mat hsv;
-//    
-//    hsv = convert_bgr_to_hsv(img);
-//    display_img(hsv, "hsv");
-//    cvtColor(hsv, hsv, CV_HSV2BGR);
-//    display_img(hsv, "hsv");
-
+    Mat result = variance(img, k_size, false);
+    imwrite(filename_des, result);
     return 0;
 }
 

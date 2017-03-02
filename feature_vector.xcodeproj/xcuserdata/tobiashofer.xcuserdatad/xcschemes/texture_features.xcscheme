@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "86C0B4361E48B10800FBDA87"
-               BuildableName = "texture_features"
-               BlueprintName = "texture_features"
-               ReferencedContainer = "container:texture_features.xcodeproj">
+               BuildableName = "feature_vector"
+               BlueprintName = "feature_vector"
+               ReferencedContainer = "container:feature_vector.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "86C0B4361E48B10800FBDA87"
-            BuildableName = "texture_features"
-            BlueprintName = "texture_features"
-            ReferencedContainer = "container:texture_features.xcodeproj">
+            BuildableName = "feature_vector"
+            BlueprintName = "feature_vector"
+            ReferencedContainer = "container:feature_vector.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "86C0B4361E48B10800FBDA87"
-            BuildableName = "texture_features"
-            BlueprintName = "texture_features"
-            ReferencedContainer = "container:texture_features.xcodeproj">
+            BuildableName = "feature_vector"
+            BlueprintName = "feature_vector"
+            ReferencedContainer = "container:feature_vector.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "86C0B4361E48B10800FBDA87"
-            BuildableName = "texture_features"
-            BlueprintName = "texture_features"
-            ReferencedContainer = "container:texture_features.xcodeproj">
+            BuildableName = "feature_vector"
+            BlueprintName = "feature_vector"
+            ReferencedContainer = "container:feature_vector.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

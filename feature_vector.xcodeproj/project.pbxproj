@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		865652DA1E644B8E00DA0027 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 865652D91E644B8E00DA0027 /* main.cpp */; };
 		86BEA2531E54A83900F3DF18 /* libopencv_imgproc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86BEA2521E54A83900F3DF18 /* libopencv_imgproc.dylib */; };
-		86C0B43B1E48B10800FBDA87 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86C0B43A1E48B10800FBDA87 /* main.cpp */; };
 		86C0B4441E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86C0B4421E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib */; };
 		86C0B4451E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86C0B4431E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib */; };
 /* End PBXBuildFile section */
@@ -26,9 +26,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		865652D91E644B8E00DA0027 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		86BEA2521E54A83900F3DF18 /* libopencv_imgproc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_imgproc.dylib; sourceTree = "<group>"; };
-		86C0B4371E48B10800FBDA87 /* texture_features */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = texture_features; sourceTree = BUILT_PRODUCTS_DIR; };
-		86C0B43A1E48B10800FBDA87 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		86C0B4371E48B10800FBDA87 /* feature_vector */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = feature_vector; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C0B4421E48B62E00FBDA87 /* libopencv_highgui.2.4.13.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.13.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_highgui.2.4.13.dylib; sourceTree = "<group>"; };
 		86C0B4431E48B62E00FBDA87 /* libopencv_core.2.4.13.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.13.dylib; path = ../../../../../../usr/local/Cellar/opencv/2.4.13.2/lib/libopencv_core.2.4.13.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,7 +59,7 @@
 		86C0B4381E48B10800FBDA87 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				86C0B4371E48B10800FBDA87 /* texture_features */,
+				86C0B4371E48B10800FBDA87 /* feature_vector */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,7 +67,7 @@
 		86C0B4391E48B10800FBDA87 /* texture_features */ = {
 			isa = PBXGroup;
 			children = (
-				86C0B43A1E48B10800FBDA87 /* main.cpp */,
+				865652D91E644B8E00DA0027 /* main.cpp */,
 			);
 			path = texture_features;
 			sourceTree = "<group>";
@@ -85,9 +85,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		86C0B4361E48B10800FBDA87 /* texture_features */ = {
+		86C0B4361E48B10800FBDA87 /* feature_vector */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 86C0B43E1E48B10800FBDA87 /* Build configuration list for PBXNativeTarget "texture_features" */;
+			buildConfigurationList = 86C0B43E1E48B10800FBDA87 /* Build configuration list for PBXNativeTarget "feature_vector" */;
 			buildPhases = (
 				86C0B4331E48B10800FBDA87 /* Sources */,
 				86C0B4341E48B10800FBDA87 /* Frameworks */,
@@ -97,9 +97,9 @@
 			);
 			dependencies = (
 			);
-			name = texture_features;
+			name = feature_vector;
 			productName = texture_features;
-			productReference = 86C0B4371E48B10800FBDA87 /* texture_features */;
+			productReference = 86C0B4371E48B10800FBDA87 /* feature_vector */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -117,7 +117,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 86C0B4321E48B10800FBDA87 /* Build configuration list for PBXProject "texture_features" */;
+			buildConfigurationList = 86C0B4321E48B10800FBDA87 /* Build configuration list for PBXProject "feature_vector" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -129,7 +129,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				86C0B4361E48B10800FBDA87 /* texture_features */,
+				86C0B4361E48B10800FBDA87 /* feature_vector */,
 			);
 		};
 /* End PBXProject section */
@@ -139,7 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86C0B43B1E48B10800FBDA87 /* main.cpp in Sources */,
+				865652DA1E644B8E00DA0027 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +260,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		86C0B4321E48B10800FBDA87 /* Build configuration list for PBXProject "texture_features" */ = {
+		86C0B4321E48B10800FBDA87 /* Build configuration list for PBXProject "feature_vector" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86C0B43C1E48B10800FBDA87 /* Debug */,
@@ -269,7 +269,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		86C0B43E1E48B10800FBDA87 /* Build configuration list for PBXNativeTarget "texture_features" */ = {
+		86C0B43E1E48B10800FBDA87 /* Build configuration list for PBXNativeTarget "feature_vector" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86C0B43F1E48B10800FBDA87 /* Debug */,
